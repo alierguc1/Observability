@@ -1,6 +1,7 @@
 ﻿using Observability.ConsoleApp.Providers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Observability.ConsoleApp.Services
         static HttpClient _httpClient = new HttpClient();
         internal async Task<int> MakeRequestToGoogle()
         {
-            using var activity = ActivitySourceProvider.Source.StartActivity();
+            using var activity = ActivitySourceProvider.Source.StartActivity(kind: ActivityKind.Producer, name: "MakeRequestToGoogle");
             var result = await _httpClient.GetAsync("https://www.google.com");
             var responseContent = await result.Content.ReadAsStringAsync();
             return responseContent.Length;
