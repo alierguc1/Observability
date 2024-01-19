@@ -1,11 +1,10 @@
-﻿
-
-using Observability.ConsoleApp.Constants;
+﻿using Observability.ConsoleApp.Constants;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
 var traceProvider = Sdk.CreateTracerProviderBuilder()
+                        .AddSource(OpenTelemetryConstants.ActivitySourceName)
                         .ConfigureResource(conf =>
                         {
                             conf.AddService(OpenTelemetryConstants.ServiceName,
