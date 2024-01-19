@@ -20,9 +20,11 @@ namespace Observability.ConsoleApp.Services
             {
                 var eventTags = new ActivityTagsCollection();
                 activity?.AddEvent(new("Request to Google started...", tags: eventTags));
-                var result = await _httpClient.GetAsync("httpss://www.google.com");
+                activity?.AddTag("request.schema","https");
+                activity?.AddTag("request.method","GET");
+                var result = await _httpClient.GetAsync("https://www.google.com");
                 var responseContent = await result.Content.ReadAsStringAsync();
-                eventTags.Add("Google request body lenght : ", responseContent.Length);
+                activity?.AddTag("response.lenght", responseContent.Length);
                 activity?.AddEvent(new("Request to Google finished.!", tags: eventTags));
                 return responseContent.Length;
             }
