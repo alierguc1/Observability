@@ -30,10 +30,34 @@ namespace Observability.ConsoleApp.Services
             }
             catch (Exception ex)
             {
-                activity?.SetStatus(ActivityStatusCode.Error, $"Istek yaparken hata oluştu : {ex.Message}");
+                activity?.SetStatus(ActivityStatusCode.Error, $"Error Detail : {ex.Message}");
                 return -1;
             }
             
+        }
+
+        internal async Task<int> MakeRequestToYandex()
+        {
+            using var activity = ActivitySourceProvider.Source.StartActivity(kind: ActivityKind.Server, name: "MakeRequestToYandex");
+
+            try
+            {
+                var eventTags = new ActivityTagsCollection();
+                activity?.AddEvent(new("Request to Yandex started...", tags: eventTags));
+                activity?.AddTag("request.schema", "https");
+                activity?.AddTag("request.method", "GET");
+                var result = await _httpClient.GetAsync("https://www.yandex.com");
+                var responseContent = await result.Content.ReadAsStringAsync();
+                activity?.AddTag("response.lenght", responseContent.Length);
+                activity?.AddEvent(new("Request to Yandex finished.!", tags: eventTags));
+                return responseContent.Length;
+            }
+            catch (Exception ex)
+            {
+                activity?.SetStatus(ActivityStatusCode.Error, $"Error Detail : {ex.Message}");
+                return -1;
+            }
+
         }
     }
 }
