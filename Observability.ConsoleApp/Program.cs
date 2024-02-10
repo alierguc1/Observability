@@ -6,7 +6,7 @@ using OpenTelemetry.Trace;
 
 Console.WriteLine("Start Tracing...");
 
-var traceProvider = Sdk.CreateTracerProviderBuilder()
+using var traceProvider = Sdk.CreateTracerProviderBuilder()
                         .AddSource(OpenTelemetryConstants.ActivitySourceName)
                         .ConfigureResource(conf =>
                         {
@@ -18,7 +18,7 @@ var traceProvider = Sdk.CreateTracerProviderBuilder()
                                                 new KeyValuePair<string, object>("host.environment","dev"),
                                                 new KeyValuePair<string, object>("dotnet.version",Environment.Version.ToString())
                                             });
-                        }).AddConsoleExporter().Build();
+                        }).AddConsoleExporter().AddOtlpExporter().Build();
 
 var serviceHelper = new ServiceHelper();
 await serviceHelper.Work_1();
